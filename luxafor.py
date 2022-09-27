@@ -33,6 +33,7 @@ class Device:
     def set_color(self, color):
         self._write_command(Commands.set_color, color, [0,0,0])
 
+    # does not work with the luxafor version I've tried with :'(
     def fade_to(self, color, speed):
         self._write_command(Commands.fade_to, color, [speed, 0, 0])
 
@@ -41,7 +42,6 @@ class Device:
         if len(arguments) != 3:
             arguments = [0,0,0]
 
-        # self.dev.write(command, [self.target, color] + arguments)
         args = [self.target, color] + arguments
         self.dev.write(command, args)
 
@@ -59,18 +59,11 @@ def main():
         'off': 0x4f,
     }
 
-    commands = {
-        'set_color': Device.set_color,
-        'fade_in': Device.fade_to
-    }
-
-    parser = argparse.ArgumentParser(description='Change Luxafor colour')
-    parser.add_argument('color', choices=color_codes.keys(), help='color to change to')
+    parser = argparse.ArgumentParser(description='Change Luxafor color')
+    parser.add_argument('color', choices=color_codes.keys(), help='New color')
     args = parser.parse_args()
 
-
     d = Device()
-
     color = color_codes[args.color]
     d.set_color(color)
 
