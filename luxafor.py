@@ -58,6 +58,22 @@ def rgb_from_hex(hex_color):
     )
 
 
+
+def parse_input_color(arg):
+    named_colors = {
+        'off':     (0x00, 0x00, 0x00),
+        'white':   (0xff, 0xff, 0xff),
+        'cyan':    (0x00, 0xff, 0xff),
+        'magenta': (0xff, 0x00, 0xff),
+        'yellow':  (0xff, 0xff, 0x00),
+        'red':     (0xff, 0x00, 0x00),
+        'green':   (0x00, 0xff, 0x00),
+        'blue':    (0x00, 0x00, 0xff),
+    }
+    color = named_colors.get(arg)
+    return color if color else rgb_from_hex(arg)
+
+
 def call_func(func, device, led, r, g, b, speed, repeat, type_):
     func(device, led, r, g, b, speed, repeat, type_)
 
@@ -75,14 +91,14 @@ def main():
     parser = argparse.ArgumentParser(description='Set Luxafor state')
     parser.add_argument('--command', choices=commands.keys(), help='Command to run')
     parser.add_argument('--color', '-c', help='Color in hex value, #ff00ff for instance')
-    parser.add_argument('--leds', '-l', type=int, choices=[0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0xFF, 0x41, 0x42], help='')
+    parser.add_argument('--leds', '-l', type=lambda x: int(x, 0), choices=[0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0xFF, 0x41, 0x42], help='')
     parser.add_argument('--speed', '-s', type=int, help='Speed (fade-in/wave/strobe)')
     parser.add_argument('--repeat', '-r', type=int, help='Repeats (0-255 -> 0 = infinite)')
     parser.add_argument('--type', '-t', type=int, help='Type (1-5 for wave or 0-8 for built-ins)')
     args = parser.parse_args()
 
     d = Device()
-    r, g, b = rgb_from_hex(args.color) if args.color else (0,0,0)
+    r, g, b = parse_input_color(args.color) if args.color else (0,0,0)
     call_func(commands[args.command], d, args.leds, r, g, b, args.speed, args.repeat, args.type)
 
 
