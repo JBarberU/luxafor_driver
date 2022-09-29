@@ -49,7 +49,6 @@ class Device:
         self.dev.write(1, command)
 
 
-
 def rgb_from_hex(hex_color):
     hex_color = hex_color.strip('#').strip()
     return(
@@ -57,8 +56,6 @@ def rgb_from_hex(hex_color):
         int(hex_color[2:4], 16),
         int(hex_color[4:6], 16),
     )
-
-
 
 
 def call_func(func, device, led, r, g, b, speed, repeat, type_):
